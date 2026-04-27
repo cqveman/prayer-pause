@@ -1,4 +1,4 @@
 {
-  "notify_duration_in_minutes": 10,
-  "lock_duration_in_minutes": 20
+    "notify_duration_in_minutes": 10,
+    "lock_duration_in_minutes": 20
 }

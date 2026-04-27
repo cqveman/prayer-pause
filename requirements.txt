@@ -1,0 +1,6 @@
+pystray~=0.19.5
+pillow~=12.2.0
+requests~=2.33.1
+python-dotenv~=1.2.2
+plyer~=2.1.0
+APScheduler~=3.11.2
