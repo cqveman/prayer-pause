@@ -23,7 +23,7 @@ def lock(prayer_name: str, duration_minutes: int):
     root.focus_force()
 
     # Exiter
-    root.bind('<Control-Shift-Up>', lambda e: root.destroy())
+    # root.bind('<Control-Shift-Up>', lambda e: root.destroy())
 
     tk.Label(root, text='Prayer Pause', font=('Helvetica', 32, 'bold'), fg='white', bg='#1a1a1a') \
         .grid(row=0, column=0, sticky='s')
