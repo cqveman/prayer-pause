@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 import requests
 from dotenv import load_dotenv
@@ -19,20 +20,17 @@ def _filter_prayers(data: dict, SKIP, skip_nafl: bool = False):
 
 
 def _get_location():
-    # key = os.getenv("IP_API_KEY")
-    # if not key:
-    #     raise ValueError("API Key not found! Check your .env file.")
-    #
-    # user_ip = requests.get('https://api.ipquery.io').text
-    #
-    # response = requests.get(f'https://ip-intelligence.abstractapi.com/v1/?api_key={key}&ip_address={user_ip}')
-    # data = response.json()
-    #
-    # city = data.get('location').get('city')
-    # country = data.get('location').get('country_code')
+    key = os.getenv("IP_API_KEY")
+    if not key:
+        raise ValueError("API Key not found! Check your .env file.")
 
-    city = 'Alexandria'
-    country = 'EG'
+    user_ip = requests.get('https://api.ipquery.io').text
+
+    response = requests.get(f'https://ip-intelligence.abstractapi.com/v1/?api_key={key}&ip_address={user_ip}')
+    data = response.json()
+
+    city = data.get('location').get('city')
+    country = data.get('location').get('country_code')
 
     return city, country
 

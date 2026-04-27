@@ -21,18 +21,12 @@ def _reload():
     reload_scheduler(prayers, on_prayer=_run_locker)
 
 
-def open_settings_menu():
-    settings_menu(_reload)
-
-
 def main():
     prayers = get_prayers()
     # Start background scheduler
     schedule(prayers, on_prayer=_run_locker)
     # Run tray app
     run_tray(on_settings_saved=_reload)
-
-    open_settings_menu()
 
 
 # TODO: turn the app from a foreground process to a service (systemd), because it can starts automatically on boot in linux.
