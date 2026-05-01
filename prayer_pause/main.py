@@ -1,17 +1,21 @@
-import subprocess
-import sys
-from pathlib import Path
+r"""
+Freezing Command:
+    pyinstaller --clean --onefile --windowed --add-data "app.ico;." --icon=app.ico --name prayer-pause .\prayer_pause\main.py
+"""
+
+import multiprocessing
+from multiprocessing import Process
 
 from prayer_pause.core.api import get_prayers
 from prayer_pause.core.scheduler import schedule, reload_scheduler
-from prayer_pause.ui.locker import settings_menu
+from prayer_pause.ui.locker import lock
 from prayer_pause.ui.tray import run_tray
 
 
 def _run_locker(prayer_name: str, duration_minutes: int):
-    locker_path = Path(__file__).parent / 'ui' / 'locker.py'
     try:
-        subprocess.Popen([sys.executable, str(locker_path), prayer_name, str(duration_minutes)])
+        p = Process(target=lock, args=[prayer_name, duration_minutes], daemon=False)
+        p.start()
     except Exception as e:
         print(f"Failed to launch locker for {prayer_name}: {e}")
 
@@ -22,6 +26,7 @@ def _reload():
 
 
 def main():
+    multiprocessing.freeze_support()  # Used by pyinstaller
     prayers = get_prayers()
     # Start background scheduler
     schedule(prayers, on_prayer=_run_locker)
