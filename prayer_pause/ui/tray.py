@@ -3,11 +3,11 @@ from pystray import MenuItem
 from PIL import Image
 
 from prayer_pause.ui.locker import settings_menu
-from prayer_pause.utils import BASE_DIR
+from prayer_pause.utils import get_resource_path
 
 
 def run_tray(on_settings_saved):
-    icon_path = BASE_DIR / 'app.ico'
+    icon_path = get_resource_path('app.ico')
     icon = pystray.Icon(
         'PrayerPause',
         Image.open(icon_path),

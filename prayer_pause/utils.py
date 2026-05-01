@@ -1,10 +1,32 @@
+import os
+import sys
 from datetime import datetime
 import json
 from pathlib import Path
 
-BASE_DIR = Path(__file__).parent.parent
-CONFIG = BASE_DIR / 'config.json'
-LOG = BASE_DIR / 'prayer_pause.log'
+DEFAULTS = {
+    'notify_duration_in_minutes': 10,
+    'lock_duration_in_minutes': 20
+}
+
+def get_resource_path(filename: str, is_config=False):
+    if getattr(sys, 'frozen', False):
+        # If it's a config file then set create it at `C:\Users\tryme\AppData\Roaming` (for Windows)
+        if is_config:
+            base_path = Path(os.getenv('APPDATA')) / 'PrayerPause'
+            base_path.mkdir(exist_ok=True)
+            config_path = base_path / filename
+
+            if not config_path.exists():  # create with defaults on first run
+                config_path.write_text(json.dumps(DEFAULTS, indent=4))
+
+            return config_path
+
+        base_path = Path(sys._MEIPASS)
+    else:
+        base_path = Path(__file__).parent.parent.resolve()
+    # Returns full absolute path
+    return base_path.joinpath(filename)
 
 
 def time_to_datetime(time_str):
@@ -12,6 +34,9 @@ def time_to_datetime(time_str):
     parsed_time = datetime.combine(datetime.today().date(), time_obj)
 
     return parsed_time
+
+
+CONFIG = get_resource_path('config.json', is_config=True)
 
 
 def load_config():
