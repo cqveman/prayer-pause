@@ -11,7 +11,12 @@ scheduler = BackgroundScheduler()
 def schedule(prayers: dict, on_prayer):
     """Takes a prayers dict {prayer_name: 'HH:MM'}, and a callable function passed by `main.py`"""
     current_time = datetime.now()
-    notify_mins, lock_mins = load_config()
+
+    # Preventing `TypeError: cannot unpack non-iterable NoneType object` error
+    try:
+        notify_mins, lock_mins = load_config()
+    except TypeError:
+        notify_mins, lock_mins = load_config()
 
     for name, time_str in prayers.items():
         prayer_datetime = time_to_datetime(time_str)
