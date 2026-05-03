@@ -90,8 +90,8 @@ pyinstaller --clean \
 
 
 ## TODOs
--[ ] Offline mode.
--[ ] Auto start on system login (Windows/Linux).
+- [ ] Offline mode.
+- [ ] Auto start on system login (Windows/Linux).
 
 
 ## Troubleshooting
