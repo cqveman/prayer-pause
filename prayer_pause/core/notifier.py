@@ -9,6 +9,7 @@ def notify_startup():
     notification.notify(
         title='Prayer Pause',
         message='App is running in the background.',
+        app_name='Prayer Pause',
         app_icon=str(icon),
         timeout=4,
     )
