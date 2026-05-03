@@ -1,8 +1,3 @@
-r"""
-Freezing Command:
-    pyinstaller --clean --onefile --windowed --add-data "app.ico;." --icon=app.ico --name prayer-pause .\prayer_pause\main.py
-"""
-
 import multiprocessing
 from multiprocessing import Process
 
@@ -36,10 +31,5 @@ def main():
     run_tray(on_settings_saved=_reload)
 
 
-# TODO:
-#   - auto start at system login
-#   - turn to a service for linux
-#   - auto fetch prayers for the next day/week/month
-#   - offline prayer calculation
 if __name__ == "__main__":
     main()
