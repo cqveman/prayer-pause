@@ -32,7 +32,6 @@ def _get_today_date():
     return datetime.today().strftime('%d-%m-%Y')
 
 
-# TODO: offline prayer times calculation
 def get_prayers(skip_nafl=True):
     URL = 'https://api.aladhan.com/v1/timingsByCity'
     SKIP = ['Imsak', 'Midnight', 'Firstthird', 'Lastthird']

@@ -2,13 +2,13 @@ from datetime import datetime, timedelta
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from prayer_pause.core.notifier import notify
+from prayer_pause.core.notifier import notify_adhan
 from prayer_pause.utils import time_to_datetime, load_config
 
 scheduler = BackgroundScheduler()
 
 
-def schedule(prayers: dict, on_prayer):
+def schedule_prayers(prayers: dict, on_prayer):
     """Takes a prayers dict {prayer_name: 'HH:MM'}, and a callable function passed by `main.py`"""
     current_time = datetime.now()
 
@@ -30,7 +30,7 @@ def schedule(prayers: dict, on_prayer):
         if notify_time > current_time:
             print(f"Scheduled notifier for {name} at {notify_time.time()}")
             scheduler.add_job(
-                func=notify,
+                func=notify_adhan,
                 args=[name, notify_mins],
                 trigger='date',
                 run_date=notify_time,
@@ -51,6 +51,7 @@ def schedule(prayers: dict, on_prayer):
         except (KeyboardInterrupt, SystemExit):
             print("Scheduler stopped by user.")
 
+
 def reload_scheduler(prayers, on_prayer):
     scheduler.remove_all_jobs()
-    schedule(prayers, on_prayer)
+    schedule_prayers(prayers, on_prayer)

@@ -7,7 +7,8 @@ import multiprocessing
 from multiprocessing import Process
 
 from prayer_pause.core.api import get_prayers
-from prayer_pause.core.scheduler import schedule, reload_scheduler
+from prayer_pause.core.notifier import notify_startup
+from prayer_pause.core.scheduler import schedule_prayers, reload_scheduler
 from prayer_pause.ui.locker import lock
 from prayer_pause.ui.tray import run_tray
 
@@ -29,11 +30,16 @@ def main():
     multiprocessing.freeze_support()  # Used by pyinstaller
     prayers = get_prayers()
     # Start background scheduler
-    schedule(prayers, on_prayer=_run_locker)
+    notify_startup()
+    schedule_prayers(prayers, on_prayer=_run_locker)
     # Run tray app
     run_tray(on_settings_saved=_reload)
 
 
-# TODO: turn the app from a foreground process to a service (systemd), because it can starts automatically on boot in linux.
+# TODO:
+#   - auto start at system login
+#   - turn to a service for linux
+#   - auto fetch prayers for the next day/week/month
+#   - offline prayer calculation
 if __name__ == "__main__":
     main()
