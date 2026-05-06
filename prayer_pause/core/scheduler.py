@@ -14,13 +14,22 @@ def schedule_prayers(prayers: dict, on_prayer):
 
     # Preventing `TypeError: cannot unpack non-iterable NoneType object` error
     try:
-        notify_mins, lock_mins = load_config()
+        notify_mins, lock_mins, locker_offset, before_or_after = load_config()
     except TypeError:
-        notify_mins, lock_mins = load_config()
+        notify_mins, lock_mins, locker_offset, before_or_after = load_config()
 
     for name, time_str in prayers.items():
+
         prayer_datetime = time_to_datetime(time_str)
         notify_time = prayer_datetime - timedelta(minutes=notify_mins)
+
+        # Set an offset if value is larger than 0
+        if locker_offset != 0:
+            locker_offset = locker_offset * -1 if before_or_after == 'BEFORE' \
+                else locker_offset
+
+            prayer_datetime = prayer_datetime + timedelta(minutes=locker_offset)
+            notify_time = notify_time + timedelta(minutes=locker_offset)
 
         # Skip prayer if it was in the past
         if prayer_datetime < current_time:

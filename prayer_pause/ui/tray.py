@@ -2,7 +2,7 @@ import pystray
 from pystray import MenuItem
 from PIL import Image
 
-from prayer_pause.ui.locker import settings_menu
+from prayer_pause.ui.settings import settings_menu
 from prayer_pause.utils import get_resource_path
 
 

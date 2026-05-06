@@ -27,6 +27,7 @@ def main():
     # Start background scheduler
     notify_startup()
     schedule_prayers(prayers, on_prayer=_run_locker)
+    print()
     # Run tray app
     run_tray(on_settings_saved=_reload)
 
