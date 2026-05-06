@@ -79,13 +79,7 @@ pyinstaller --clean prayer-pause.spec
 If you encounter issues with the `.spec` file, you can delete it and run:
 
 ```bash
-pyinstaller --clean \
-            --onefile \
-            --windowed \
-            --add-data "app.ico;." \
-            --hidden-import plyer.platforms.win.notification \
-            --icon=app.ico \
-            --name prayer-pause ./prayer_pause/main.py
+pyinstaller --clean --onefile --windowed --add-data "app.ico;." --hidden-import plyer.platforms.win.notification --icon=app.ico --name prayer-pause ./prayer_pause/main.py
 ```
 
 
