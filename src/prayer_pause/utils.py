@@ -22,7 +22,7 @@ def get_resource_path(filename: str, is_config=False):
 
         base_path = Path(sys._MEIPASS)
     else:
-        base_path = Path(__file__).parent.parent.resolve()
+        base_path = Path(__file__).parent.parent.parent.resolve()
     # Returns full absolute path
     return base_path.joinpath(filename)
 
