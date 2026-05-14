@@ -6,15 +6,15 @@ reminders before each prayer, and opens a temporary full-screen lock screen duri
 
 ## Features
 
-- Automatically detects your city and country from your public IP.
-- Fetches today’s prayer times from [AlAdhan API](https://aladhan.com/prayer-times-api).
-- Sends a startup desktop notification.
+- Automatically detects your city and country from your public IP
+- Fetches today’s prayer times from [AlAdhan API](https://aladhan.com/prayer-times-api)
+- Sends a startup desktop notification
 - Schedules:
-    - **Reminder notification** _N_ minutes before each prayer.
-    - **Lock screen** for _M_ minutes at prayer time.
+    - **Reminder notification** _N_ minutes before each prayer
+    - **Lock screen** for _M_ minutes at prayer time
 - Runs in the system tray with:
-    - **Settings** menu to update reminder/lock durations.
-    - **Quit** action.
+    - **Settings** menu to update reminder/lock durations
+    - **Quit** action
   
 
 ## Installation & Setup
