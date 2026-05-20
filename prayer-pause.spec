@@ -2,8 +2,8 @@
 
 
 a = Analysis(
-    ['prayer_pause\\main.py'],
-    pathex=[],
+    ['src\\prayer_pause\\main.py'],
+    pathex=['src'],
     binaries=[],
     datas=[('app.ico', '.')],
     hiddenimports=['plyer.platforms.win.notification', 'plyer.platforms.linux.notification'],
