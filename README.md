@@ -4,18 +4,23 @@ prayer-pause is a desktop (mainly Windows) background app that fetches daily pra
 reminders before each prayer, and opens a temporary full-screen lock screen during prayer time.
 
 
-## Features
+<p align="center">
+  <img
+    width="220"
+    alt="settings_menu"
+    src="assets/tray.png"
+  />
+</p>
+
+
+##  ️Features
 
 - Automatically detects your city and country from your public IP
+- Auto start at user log-in (can be disabled)
 - Fetches today’s prayer times from [AlAdhan API](https://aladhan.com/prayer-times-api)
-- Sends a startup desktop notification
-- Schedules:
-    - **Reminder notification** _N_ minutes before each prayer
-    - **Lock screen** for _M_ minutes at prayer time
-- Runs in the system tray with:
-    - **Settings** menu to update reminder/lock durations
-    - **Quit** action
-  
+- Sends a reminder notification before each prayer
+- System tray menu to update settings
+
 
 ## Installation & Setup
 
@@ -56,14 +61,26 @@ python prayer_pause\main.py
 
 ## Configuration
 
-**Config file location**: `%APPDATA%/PrayerPause/config.json`
+### Config file location `%APPDATA%/PrayerPause/config.json`
 
 Use tray menu **Settings**:
 
 - `Notify (minutes)`: Time before prayer to show the adhan reminder.
 - `Lock (minutes)`: Lock screen duration at prayer time.
+- `Locker Offset (minutes)`: Set the locker to be executed before/after the adhan by X minutes. 
+- `Before Adhan` and `After Adhan`: Radio buttons for the Locker Offset.
 
-> **Note:** Both values must be greater than `0`.
+> **Note:** `Notify` and `Lock` values must be greater than `0`.
+
+### Auto start
+
+To disable start up on user log in:
+
+1. Open the task manager.
+2. Go to the "Startup apps" menu.
+3. Select `prayer-pause.exe` and press Disable in the top right corner.
+
+> **Note:** It also can be removed entirely from the "Registry Editor" at the location `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run`.
 
 
 ## Packaging / distribution
@@ -79,13 +96,14 @@ pyinstaller --clean prayer-pause.spec
 If you encounter issues with the `.spec` file, you can delete it and run:
 
 ```bash
-pyinstaller --clean --onefile --windowed --add-data "app.ico;." --hidden-import plyer.platforms.win.notification --icon=app.ico --name prayer-pause ./prayer_pause/main.py
+pyinstaller --clean --onefile --windowed --add-data "app.ico;." --hidden-import plyer.platforms.win.notification --icon=app.ico --name prayer-pause --paths src src/prayer_pause/main.py
 ```
 
 
 ## TODOs
+- [x] ~~Auto start on system login (Windows)~~.
+- [ ] Auto start on system login (Linux).
 - [ ] Offline mode.
-- [ ] Auto start on system login (Windows/Linux).
 
 
 ## Troubleshooting
@@ -99,6 +117,12 @@ If you encounter unexpected behavior:
 - Ensure saved values are positive integers.
 
 If the issue persists, feel free to open an [issue](https://github.com/cqveman/prayer-pause/issues)
+
+
+## Contributing
+
+plz vro open a pr 🥀💔✌🏽
+
 
 ## License
 
