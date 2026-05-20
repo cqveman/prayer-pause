@@ -14,7 +14,7 @@ DEFAULTS = {
 
 def get_resource_path(filename: str, is_config=False):
     if getattr(sys, 'frozen', False):
-        # If it's a config file then set create it at `C:\Users\tryme\AppData\Roaming` (for Windows)
+        # If it's a config file then set create it at `C:\Users\tryme\AppData\Roaming\PrayerPause` (for Windows)
         if is_config:
             base_path = Path(os.getenv('APPDATA')) / 'PrayerPause'
             base_path.mkdir(exist_ok=True)

@@ -1,5 +1,8 @@
 import multiprocessing
+import sys
+import winreg
 from multiprocessing import Process
+from pathlib import Path
 
 from prayer_pause.core.api import get_prayers
 from prayer_pause.core.notifier import notify_startup
@@ -21,8 +24,31 @@ def _reload():
     reload_scheduler(prayers, on_prayer=_run_locker)
 
 
+def _auto_startup():
+    """https://github.com/orgs/community/discussions/156548"""
+
+    def get_exe_path():
+        """https://pyinstaller.org/en/stable/runtime-information.html#using-sys-executable-and-sys-argv-0"""
+        if getattr(sys, 'frozen', False):
+            exe_path = sys.executable
+        else:
+            base_dir = Path(__file__).parent.parent.parent.resolve()
+            exe_path = base_dir / 'dist' / 'prayer-pause.exe'
+        return exe_path
+
+    key = winreg.HKEY_CURRENT_USER
+    sub_key = r'Software\Microsoft\Windows\CurrentVersion\Run'
+
+    opened_key = winreg.OpenKey(key, sub_key, 0, winreg.KEY_ALL_ACCESS)
+    winreg.SetValueEx(opened_key, 'PrayerPause', 0, winreg.REG_SZ, str(get_exe_path()))
+    winreg.CloseKey(opened_key)
+
+    print('~ Added to registry')
+
+
 def main():
     multiprocessing.freeze_support()  # Used by pyinstaller
+    _auto_startup()
     prayers = get_prayers()
     # Start background scheduler
     notify_startup()
