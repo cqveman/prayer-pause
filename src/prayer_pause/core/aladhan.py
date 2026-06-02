@@ -45,5 +45,5 @@ class AlAdhan():
         except Exception as e:
             print(f"Could not fetch prayer times ({e}). Try again later.")
         else:
-            filtered_data = self._filter_prayers response)
+            filtered_data = self._filter_prayers(response)
             return filtered_data
