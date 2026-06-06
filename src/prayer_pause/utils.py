@@ -28,7 +28,7 @@ def get_resource_path(filename: str, is_config=False):
 
 
 def time_to_datetime(time_str):
-    time_obj = datetime.strptime(time_str, '%H:%M').time().replace(microsecond=0)
+    time_obj = datetime.strptime(time_str, '%H:%M').time()
     parsed_time = datetime.combine(datetime.today().date(), time_obj)
 
     return parsed_time
