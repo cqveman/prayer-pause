@@ -5,7 +5,7 @@ from prayer_pause.domain.config import Config
 
 
 class ConfigManager:
-    def __init__(self) -> None:
+    def __init__(self):
         self.config_dir = Path()
         self._resolve_config_dir()
         self.file_path = self.config_dir / "prayer-pause.json"
@@ -29,16 +29,36 @@ class ConfigManager:
 
         self.config_dir.mkdir(parents=True, exist_ok=True)
 
-    def load_config(self) -> Config:
+    def load(self, in_dict=False) -> Config | dict[str, int]:
+        """To Access config options, dot notate the config option after calling the `load()` method."""
         try:
             raw = json.loads(self.file_path.read_text())
+            if in_dict:
+                return raw
             return Config.from_dict(raw)
 
-        except (FileNotFoundError, json.JSONDecodeError):  # Use default values
+        except (FileNotFoundError, json.JSONDecodeError, ValueError):
+            # Get the default config values and save them to the json config file.
             config = Config()
-            self.save_config(config)
+            self.save(config)
 
-        return Config.from_dict(config.to_dict())
+        # After saving the default values,
+        # there is no point of reading from the file
+        # since it has the same default options as the Config object.
+        if in_dict:
+            return config.to_dict()
+        # We return the default config values from the `Config` dataclass.
+        return config
 
-    def save_config(self, config: Config) -> None:
-        self.file_path.write_text(json.dumps(config.to_dict(), indent=4))
+    def save(self, config: Config | dict[str, int]):
+        self.file_path.write_text(
+            json.dumps(
+                config.to_dict() if isinstance(config, Config) else config,
+                indent=4,
+            )
+        )
+
+    def set(self, key: str, value: int):
+        config: dict[str, int] = self.load(in_dict=True)  # pyright: ignore[reportAssignmentType]
+        config.update({key: value})
+        self.save(config)

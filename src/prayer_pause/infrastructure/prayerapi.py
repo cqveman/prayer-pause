@@ -4,7 +4,7 @@ import requests
 
 
 class PrayerAPI:
-    def __init__(self) -> None:
+    def __init__(self):
         self.user_ip = requests.get("https://api.ipquery.io").text
         self.url: str = "https://api.aladhan.com/v1/timingsByCity"
         self.nafl_prayers: list[str] = [
@@ -52,4 +52,4 @@ class PrayerAPI:
         else:
             filtered_data = self._filter_prayers(response)
 
-        return filtered_data
+        return filtered_data  # pyright: ignore[reportPossiblyUnboundVariable]

@@ -1,0 +1,81 @@
+/* --- MAIN --- */
+
+QWidget {
+    color: #fcfcfc;
+    font-size: 15px;
+}
+
+QLabel#date {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* --- GROUPBOX --- */
+
+QGroupBox {
+    background-color: rgba(36, 36, 35, 0.8);
+    font-weight: bold;
+
+    border: 2px solid rgba(64, 61, 57, 0.4);
+    border-radius: 15px;
+
+    padding-top: 50px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+
+    left: 20px;
+    top: 20px;
+
+    color: #c9c9c9;
+    font-weight: normal;
+    letter-spacing: 1px;
+}
+
+/* --- SPINBOX --- */
+
+QSpinBox {
+    background-color: #3b3b3d;
+    border-radius: 10px;
+    padding: 1px 30px;
+}
+
+QSpinBox::up-button {
+    subcontrol-origin: border;
+    subcontrol-position: right;
+
+    width: 30px;
+    color: #fcfcfc;
+
+    border-left: 1px solid #5a5a5c;
+
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+QSpinBox::down-button {
+    subcontrol-origin: border;
+    subcontrol-position: left;
+
+    width: 30px;
+    color: #fcfcfc;
+
+    border-right: 1px solid #5a5a5c;
+
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+QSpinBox::up-arrow {
+    image: url("assets/plus.svg");
+    width: 15px;
+    height: 12px;
+}
+
+QSpinBox::down-arrow {
+    image: url("assets/minus.svg");
+    width: 15px;
+    height: 15px;
+}

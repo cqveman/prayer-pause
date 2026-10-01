@@ -1,8 +1,24 @@
 from dataclasses import asdict, dataclass
-from typing import Callable, Self
+from typing import Self
 
 
-def validate(klass: Callable, data: dict[str, int]) -> dict[str, int]:
+@dataclass(frozen=True)
+class Config:
+    lock_duration_minutes: int = 20
+    prayer_reminder_minutes: int = 10
+    lock_offset_minutes: int = 0
+
+    @classmethod
+    def from_dict(cls, data: dict[str, int]) -> Self:
+        validated_config = _validate(cls, data)
+        return cls(**validated_config)
+
+    def to_dict(self) -> dict[str, int]:
+        return asdict(self)
+
+
+def _validate(klass: type[Config], data: dict[str, int]) -> dict[str, int]:
+    # We get the default options with it's values for comparison.
     defaults = klass().to_dict()
 
     unvalid_options = set(data) - set(defaults)
@@ -26,18 +42,3 @@ def validate(klass: Callable, data: dict[str, int]) -> dict[str, int]:
         "prayer_reminder_minutes": PRM,
         "lock_offset_minutes": LOM,
     }
-
-
-@dataclass(frozen=True)
-class Config:
-    lock_duration_minutes: int = 20
-    prayer_reminder_minutes: int = 10
-    lock_offset_minutes: int = 0
-
-    @classmethod
-    def from_dict(cls, data: dict[str, int]) -> Self:
-        validated_config = validate(cls, data)
-        return cls(**validated_config)
-
-    def to_dict(self) -> dict[str, int]:
-        return asdict(self)
