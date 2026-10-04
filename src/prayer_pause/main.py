@@ -31,6 +31,8 @@ def main():
         _style = f.read()
         app.setStyleSheet(_style)
 
+    print("Prayer Pause is running.")
+
     app.exec()
 
 

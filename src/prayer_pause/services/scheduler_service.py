@@ -30,7 +30,6 @@ class SchedulerService(QObject):
 
             if prayer_datetime > datetime.now():
                 if notification_datetime > datetime.now():
-                    print(f"Notification set at {notification_datetime}")
                     self._scheduler.add_job(
                         func=on_notification,
                         args=[name, self.config.prayer_reminder_minutes],  # pyright: ignore[reportAttributeAccessIssue]
@@ -38,7 +37,6 @@ class SchedulerService(QObject):
                         run_date=notification_datetime,
                     )
 
-                print(f"Prayer locker set at {prayer_datetime}")
                 self._scheduler.add_job(
                     func=self.prayer_signal.emit,
                     args=[name],
