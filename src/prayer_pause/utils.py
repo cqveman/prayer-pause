@@ -1,4 +1,5 @@
 import os
+import platform
 from datetime import datetime
 from pathlib import Path
 from typing import ClassVar
@@ -24,6 +25,23 @@ class Utils:
     def to_12h_time(cls, time_24: str):
         """Converts a 24-hour time string (HH:MM) to 12-hour format (I:MM AM/PM)."""
         return datetime.strptime(time_24, "%H:%M").strftime("%I:%M %p").lstrip("0")
+
+    @classmethod
+    def get_config_dir(cls) -> Path:
+        base = Path()
+
+        if platform.system() == "Linux":
+            xdg_config = os.environ.get("XDG_CONFIG_HOME")
+            base = Path(xdg_config) if xdg_config else Path.home() / ".config"
+
+        elif platform.system() == "Windows":
+            appdata = os.environ.get("APPDATA")
+            base = Path(appdata) if appdata else Path.home() / "AppData" / "Roaming"
+
+        else:
+            raise ValueError(f"Unsupported platform: {platform.system()!r}")
+
+        return base
 
     @classmethod
     def get_display_manager(cls) -> str:

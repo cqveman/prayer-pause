@@ -1,33 +1,14 @@
 import json
-from pathlib import Path
 
 from prayer_pause.domain.config import Config
+from prayer_pause.utils import Utils
 
 
 class ConfigManager:
     def __init__(self):
-        self.config_dir = Path()
-        self._resolve_config_dir()
-        self.file_path = self.config_dir / "prayer-pause.json"
-
-    def _resolve_config_dir(self) -> None:
-        import os
-        import platform
-
-        if platform.system() == "Linux":
-            xdg_config = os.environ.get("XDG_CONFIG_HOME")
-            base = Path(xdg_config) if xdg_config else Path.home() / ".config"
-            self.config_dir = base / "prayer-pause"
-
-        elif platform.system() == "Windows":
-            appdata = os.environ.get("APPDATA")
-            base = Path(appdata) if appdata else Path.home() / "AppData" / "Roaming"
-            self.config_dir = base / "prayer-pause"
-
-        else:
-            raise ValueError(f"Unsupported platform: {platform.system()!r}")
-
+        self.config_dir = Utils.get_config_dir() / "prayer-pause"
         self.config_dir.mkdir(parents=True, exist_ok=True)
+        self.file_path = self.config_dir / "prayer-pause.json"
 
     def load(self, in_dict=False) -> Config | dict[str, int]:
         """To Access config options, dot notate the config option after calling the `load()` method."""
