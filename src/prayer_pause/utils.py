@@ -28,18 +28,17 @@ class Utils:
 
     @classmethod
     def get_config_dir(cls) -> Path:
-        base = Path()
+        system = platform.system()
 
-        if platform.system() == "Linux":
+        if system == "Linux":
             xdg_config = os.environ.get("XDG_CONFIG_HOME")
-            base = Path(xdg_config) if xdg_config else Path.home() / ".config"
+            return Path(xdg_config) if xdg_config else Path.home() / ".config"
 
-        elif platform.system() == "Windows":
+        elif system == "Windows":
             appdata = os.environ.get("APPDATA")
-            base = Path(appdata) if appdata else Path.home() / "AppData" / "Roaming"
+            return Path(appdata) if appdata else Path.home() / "AppData" / "Roaming"
 
-        else:
-            raise ValueError(f"Unsupported platform: {platform.system()!r}")
+        raise ValueError(f"Unsupported platform: {system!r}")
 
         return base
 
