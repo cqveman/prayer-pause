@@ -21,10 +21,12 @@ def main():
     tray.show()
     locker = Locker(config_manager)
 
+    def temp(): ...
+
     scheduler_service = SchedulerService(prayers, config_manager)
     scheduler_service.schedule(
         on_prayer=locker.exc,
-        on_notification=lambda n, rm: print(n, rm),
+        on_notification=temp,
     )
 
     with open(Path(__file__).parent.parent.parent / "style.qss", "r") as f:
