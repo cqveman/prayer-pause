@@ -2,7 +2,7 @@ from collections.abc import Callable
 from datetime import date
 
 from PySide6.QtCore import QSize
-from PySide6.QtGui import QAction, QPixmap, Qt
+from PySide6.QtGui import QAction, QIcon, QPixmap, Qt
 from PySide6.QtWidgets import (
     QApplication,
     QFormLayout,
@@ -128,6 +128,7 @@ class Tray(QSystemTrayIcon):
 
         self.setToolTip("Prayer Pause")
         self.setContextMenu(self._build_menu())
+        self.setIcon(QIcon(str(Utils.ASSETS_DIR / "icon.png")))
 
     def _build_menu(self) -> QMenu:
         menu = QMenu()

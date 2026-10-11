@@ -6,8 +6,8 @@ from typing import ClassVar
 
 
 class Utils:
-    ROOT_DIR = Path(__file__).parent.parent.parent
-    ASSETS_DIR = ROOT_DIR / "assets"
+    ROOT_DIR: ClassVar = Path(__file__).parent.parent.parent
+    ASSETS_DIR: ClassVar = ROOT_DIR / "assets"
 
     # Values (in minutes) below correspond to the `Config` dataclass members in order.
     MIN_VALUES: ClassVar = [1, 1, 0]
