@@ -40,7 +40,23 @@ class Utils:
 
         raise ValueError(f"Unsupported platform: {system!r}")
 
-        return base
+    @classmethod
+    def get_cache_dir(cls) -> Path:
+        system = platform.system()
+
+        if system == "Linux":
+            xdg_cache = os.environ.get("XDG_CACHE_HOME")
+            return Path(xdg_cache) if xdg_cache else Path.home() / ".cache"
+
+        elif system == "Windows":
+            local_appdata = os.environ.get("LOCALAPPDATA")
+            return (
+                Path(local_appdata)
+                if local_appdata
+                else Path.home() / "AppData" / "Local"
+            )
+
+        raise ValueError(f"Unsupported platform: {system!r}")
 
     @classmethod
     def get_display_manager(cls) -> str:

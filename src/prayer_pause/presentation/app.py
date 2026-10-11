@@ -1,6 +1,5 @@
 from collections.abc import Callable
 from datetime import date
-from typing import ClassVar
 
 from PySide6.QtCore import QSize
 from PySide6.QtGui import QAction, QPixmap, Qt
@@ -24,14 +23,11 @@ from prayer_pause.utils import Utils
 
 
 class Window(QMainWindow):
-    BLUR: ClassVar = QGraphicsBlurEffect()
-    BLUR.setBlurRadius(float(10))
-    BLUR.setBlurHints(QGraphicsBlurEffect.BlurHint.AnimationHint)
-
-    def __init__(self, prayers: dict[str, str], config_manager: ConfigManager):
+    def __init__(self, prayers: dict[str, dict[str,str]], config_manager: ConfigManager):  # fmt:skip
         super().__init__()
 
-        self.prayers = prayers
+        self.today = date.today()
+        self.prayers = prayers.get(self.today.strftime("%d-%m-%Y"), {})
         self.config_manager = config_manager
 
         self.setWindowTitle("Prayer Pause")
@@ -50,7 +46,7 @@ class Window(QMainWindow):
 
     def _build_background(self):
         date_label = QLabel(
-            text=date.today().strftime("%A, %d %B %Y").upper(),
+            text=self.today.strftime("%A, %d %B %Y").upper(),
             alignment=Qt.AlignmentFlag.AlignCenter,
         )
         date_label.setObjectName("date")
@@ -71,24 +67,28 @@ class Window(QMainWindow):
         )
 
         bg.lower()  # Make it appear behind widgets
-        bg.setGraphicsEffect(Window.BLUR)
+
+        blur = QGraphicsBlurEffect(bg)
+        blur.setBlurRadius(10.0)
+        blur.setBlurHints(QGraphicsBlurEffect.BlurHint.AnimationHint)
+        bg.setGraphicsEffect(blur)
 
     def _prayers_panel(self) -> QGroupBox:
-        box = QGroupBox(title="PRAYER TIMES")
+        box = QGroupBox(title=self.today.strftime("%A, %d %B %Y").upper())
 
         form = QFormLayout(box)
         form.setVerticalSpacing(20)
         form.setContentsMargins(40, 10, 40, 30)
 
         for name, time in self.prayers.items():
-            form.addRow(name.upper(), QLabel(text=Utils.to_12h_time(time), alignment=Qt.AlignmentFlag.AlignRight))  # fmt: skip
+            form.addRow(name.upper(), QLabel(text=Utils.to_12h_time(time), alignment=Qt.AlignmentFlag.AlignRight))  # fmt:skip
 
         return box
 
     def _settings_panel(self) -> QGroupBox:
         box = QGroupBox(title="SETTINGS")
 
-        config: dict[str, int] = self.config_manager.load(in_dict=True)  # pyright: ignore[reportAssignmentType]
+        config: dict[str, int] = self.config_manager.load(in_dict=True)
         lables = [Utils.format_config_key(key) for key in config]
         values = [value for value in config.values()]
 
@@ -113,7 +113,7 @@ class Window(QMainWindow):
             spin.lineEdit().setReadOnly(True)
             spin.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-            spin.valueChanged.connect(lambda value, k=key: self.config_manager.set(k, value))  # fmt: skip
+            spin.valueChanged.connect(lambda value, k=key: self.config_manager.set(k, value))  # fmt:skip
             form.addRow(label, spin)
 
         return box
@@ -123,6 +123,7 @@ class Tray(QSystemTrayIcon):
     def __init__(self, create_window: Callable[[], Window]):
         super().__init__()
 
+        self._create_window = create_window
         self.window = create_window()
 
         self.setToolTip("Prayer Pause")
@@ -144,6 +145,12 @@ class Tray(QSystemTrayIcon):
         return menu
 
     def _show_window(self):
+        # If the app is running for over a day, re-create it.
+        # (so the prayer times gets updated to the current day)
+        if self.window.today != date.today():
+            self.window.deleteLater()
+            self.window = self._create_window()
+
         self.window.show()
         self.window.raise_()
         self.window.activateWindow()
