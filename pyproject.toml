@@ -5,10 +5,3 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "prayer-pause"
 version = "1.0"
-dependencies = [
-    "pystray~=0.19.5",
-    "pillow~=12.2.0",
-    "requests~=2.33.1",
-    "plyer~=2.1.0",
-    "APScheduler~=3.11.2",
-]

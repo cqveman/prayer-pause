@@ -113,7 +113,9 @@ class Window(QMainWindow):
             name_label = QLabel(name.upper())
             name_label.setObjectName("prayerName")
 
-            time_label = QLabel(Utils.to_12h_time(time), alignment=Qt.AlignmentFlag.AlignRight)
+            time_label = QLabel(
+                Utils.to_12h_time(time), alignment=Qt.AlignmentFlag.AlignRight
+            )
             time_label.setObjectName("prayerTime")
 
             form.addRow(name_label, time_label)
@@ -147,13 +149,20 @@ class Window(QMainWindow):
 
             spin.lineEdit().setReadOnly(True)
             spin.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            spin.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Fixed)
+            spin.setFixedWidth(150)
 
             spin.valueChanged.connect(lambda value, k=key: self.config_manager.set(k, value))  # fmt:skip
 
             text = QLabel(label)
             text.setObjectName("settingLabel")
-            form.addRow(text, spin)
+
+            # A layout to push the spinboxes to the right side of the form
+            field = QHBoxLayout()
+            field.setContentsMargins(0, 0, 0, 0)
+            field.addStretch()
+            field.addWidget(spin)
+
+            form.addRow(text, field)
 
         return box
 
