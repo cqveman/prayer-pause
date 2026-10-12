@@ -1,7 +1,7 @@
 from collections.abc import Callable
-from datetime import date
+from datetime import date, datetime
 
-from PySide6.QtCore import QSize
+from PySide6.QtCore import QSize, QTimer
 from PySide6.QtGui import QAction, QIcon, QPixmap, Qt
 from PySide6.QtWidgets import (
     QApplication,
@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (
     QLabel,
     QMainWindow,
     QMenu,
+    QSizePolicy,
     QSpinBox,
     QSystemTrayIcon,
     QVBoxLayout,
@@ -35,43 +36,71 @@ class Window(QMainWindow):
 
         self.container = QWidget()
         self.main_layout = QVBoxLayout(self.container)
+        self.main_layout.setContentsMargins(16, 10, 16, 16)
+        self.main_layout.setSpacing(8)
+
         self._build_background()
+        self._build_clock()
 
         panels_layout = QHBoxLayout()
-        panels_layout.addWidget(self._prayers_panel())
-        panels_layout.addWidget(self._settings_panel())
+        panels_layout.setSpacing(14)
+        panels_layout.addWidget(self._prayers_panel(), 1)
+        panels_layout.addWidget(self._settings_panel(), 1)
 
         self.main_layout.addLayout(panels_layout)
         self.setCentralWidget(self.container)
 
-    def _build_background(self):
-        date_label = QLabel(
-            text=self.today.strftime("%A, %d %B %Y").upper(),
-            alignment=Qt.AlignmentFlag.AlignCenter,
-        )
-        date_label.setObjectName("date")
-        self.main_layout.addWidget(date_label)
+        self.container.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.container.setFocus()
 
+        self.clock_timer = QTimer(self)
+        self.clock_timer.timeout.connect(self._tick)
+        self._tick()
+
+    def _build_background(self):
         bg = QLabel(self.container)
 
         pad = 40
-        pad_size = QSize(self.width() + pad * 2, self.height() + pad * 2)
-        bg.setGeometry(-pad, -pad, pad_size.width(), pad_size.height())
+        size = QSize(self.width() + pad * 2, self.height() + pad * 2)
+        bg.setGeometry(-pad, -pad, size.width(), size.height())
 
         bg.setPixmap(
             QPixmap(Utils.ASSETS_DIR / "bg.jpg").scaled(
-                pad_size,
+                size,
                 Qt.AspectRatioMode.KeepAspectRatioByExpanding,
                 Qt.TransformationMode.SmoothTransformation,
             )
         )
 
-        bg.lower()  # Make it appear behind widgets
-
         blur = QGraphicsBlurEffect(bg)
         blur.setBlurRadius(10.0)
         blur.setBlurHints(QGraphicsBlurEffect.BlurHint.AnimationHint)
         bg.setGraphicsEffect(blur)
+
+        dim = QWidget(self.container)
+        dim.setObjectName("dim")
+        dim.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+        dim.setGeometry(0, 0, self.width(), self.height())
+
+        # `dim` is lowered,
+        # then `bg` is lowered further back sitting underneath `dim`
+        dim.lower()
+        bg.lower()
+
+    # --- CLOCK ---
+
+    def _build_clock(self):
+        self.clock_label = QLabel(alignment=Qt.AlignmentFlag.AlignCenter)
+        self.clock_label.setObjectName("clock")
+        self.main_layout.addWidget(self.clock_label)
+
+    def _tick(self):
+        now = datetime.now()
+        text = f"{now.hour % 12 or 12}:{now.minute:02}:{now.second:02} {'AM' if now.hour < 12 else 'PM'}"
+        if text != self.clock_label.text():
+            self.clock_label.setText(text)
+
+    # --- PANELS ---
 
     def _prayers_panel(self) -> QGroupBox:
         box = QGroupBox(title=self.today.strftime("%A, %d %B %Y").upper())
@@ -81,7 +110,13 @@ class Window(QMainWindow):
         form.setContentsMargins(40, 10, 40, 30)
 
         for name, time in self.prayers.items():
-            form.addRow(name.upper(), QLabel(text=Utils.to_12h_time(time), alignment=Qt.AlignmentFlag.AlignRight))  # fmt:skip
+            name_label = QLabel(name.upper())
+            name_label.setObjectName("prayerName")
+
+            time_label = QLabel(Utils.to_12h_time(time), alignment=Qt.AlignmentFlag.AlignRight)
+            time_label.setObjectName("prayerTime")
+
+            form.addRow(name_label, time_label)
 
         return box
 
@@ -112,11 +147,24 @@ class Window(QMainWindow):
 
             spin.lineEdit().setReadOnly(True)
             spin.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            spin.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Fixed)
 
             spin.valueChanged.connect(lambda value, k=key: self.config_manager.set(k, value))  # fmt:skip
-            form.addRow(label, spin)
+
+            text = QLabel(label)
+            text.setObjectName("settingLabel")
+            form.addRow(text, spin)
 
         return box
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        self._tick()
+        self.clock_timer.start(250)
+
+    def hideEvent(self, event):
+        self.clock_timer.stop()
+        super().hideEvent(event)
 
 
 class Tray(QSystemTrayIcon):

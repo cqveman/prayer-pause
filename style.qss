@@ -3,88 +3,150 @@
     Dark Raspberry #880E48
     Hot Rose       #C61469
     Salmon         #FF9478
+
+  Dark Palette
+    Panel          #231621 -> #1A1016
+    Raised         #2A1B24
+    Hairline       #3A2631
+    Muted text     #C6A885
 */
 
 /* --- MAIN --- */
 
 QWidget {
-    color: #fcfcfc;
+    color: #FFDAAA;
     font-size: 15px;
 }
 
-QLabel#date {
-    font-size: 20px;
-    font-weight: bold;
+QWidget#dim {
+    background-color: rgba(14, 7, 11, 0.62);
+}
+
+QLabel#clock {
+    font-size: 34px;
+    font-weight: 500;
 }
 
 /* --- GROUPBOX --- */
 
 QGroupBox {
-    background-color: rgba(36, 36, 35, 0.8);
-    font-weight: bold;
-
-    border: 2px solid rgba(64, 61, 57, 0.4);
-    border-radius: 15px;
+    background-color: qlineargradient(
+        x1: 0, y1: 0, x2: 0, y2: 1,
+        stop: 0 #231621,
+        stop: 1 #1A1016
+    );
+    border: 1px solid #36232E;
+    border-radius: 16px;
 
     padding-top: 50px;
+
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
 }
 
 QGroupBox::title {
     subcontrol-origin: margin;
     subcontrol-position: top left;
 
-    left: 20px;
+    left: 22px;
     top: 20px;
 
-    color: #c9c9c9;
-    font-weight: normal;
-    letter-spacing: 1px;
+    color: #FF9478;
+}
+
+QLabel#prayerName {
+    color: #C6A885;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+QLabel#prayerTime {
+    color: #FFDAAA;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+QLabel#settingLabel {
+    color: #C6A885;
+    font-size: 15px;
+    font-weight: 400;
+    min-height: 32px;
 }
 
 /* --- SPINBOX --- */
 
 QSpinBox {
-    background-color: #3b3b3d;
+    background-color: #2A1B24;
+    border: 1px solid #3A2631;
     border-radius: 10px;
     padding: 1px 30px;
+    min-height: 28px;
+}
+
+QSpinBox:hover {
+    border-color: #4C3341;
+}
+
+QSpinBox:focus {
+    border-color: #C61469;
 }
 
 QSpinBox::up-button {
-    subcontrol-origin: border;
+    subcontrol-origin: padding;
     subcontrol-position: right;
 
     width: 30px;
-    color: #fcfcfc;
 
-    border-left: 1px solid #5a5a5c;
+    border-left: 1px solid #3A2631;
 
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
+    border-top-right-radius: 9px;
+    border-bottom-right-radius: 9px;
 }
 
 QSpinBox::down-button {
-    subcontrol-origin: border;
+    subcontrol-origin: padding;
     subcontrol-position: left;
 
     width: 30px;
-    color: #fcfcfc;
 
-    border-right: 1px solid #5a5a5c;
+    border-right: 1px solid #3A2631;
 
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
+    border-top-left-radius: 9px;
+    border-bottom-left-radius: 9px;
+}
+
+QSpinBox::up-button:hover,
+QSpinBox::down-button:hover {
+    background-color: #4A1B33;
+}
+
+QSpinBox::up-button:pressed,
+QSpinBox::down-button:pressed {
+    background-color: #880E48;
 }
 
 QSpinBox::up-arrow {
     image: url("assets/plus.svg");
-    width: 15px;
+    width: 12px;
     height: 12px;
 }
 
 QSpinBox::down-arrow {
     image: url("assets/minus.svg");
-    width: 15px;
-    height: 15px;
+    width: 12px;
+    height: 12px;
+}
+
+QSpinBox::up-arrow:disabled,
+QSpinBox::up-arrow:off {
+    image: url("assets/plus_off.svg");
+}
+
+QSpinBox::down-arrow:disabled,
+QSpinBox::down-arrow:off {
+    image: url("assets/minus_off.svg");
 }
 
 /* --- LOCKER --- */
@@ -109,7 +171,6 @@ QLabel#Title {
     letter-spacing: 1px;
 }
 
-/* Monospace keeps every digit the same width, so the time doesn't jitter each second. */
 QLabel#Countdown {
     color: #FFDAAA;
     font-size: 176px;
