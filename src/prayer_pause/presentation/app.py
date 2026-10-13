@@ -12,7 +12,6 @@ from PySide6.QtWidgets import (
     QLabel,
     QMainWindow,
     QMenu,
-    QSizePolicy,
     QSpinBox,
     QSystemTrayIcon,
     QVBoxLayout,

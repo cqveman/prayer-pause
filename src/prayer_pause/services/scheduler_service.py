@@ -22,7 +22,7 @@ class SchedulerService(QObject):
     def schedule(
         self,
         on_prayer: Callable[[str], None],
-        on_notification: Callable[[],],
+        on_notification: Callable[[], None],
     ):
         self.prayer_signal.connect(on_prayer)
         self.notification_signal.connect(on_notification)
