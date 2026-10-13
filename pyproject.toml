@@ -20,3 +20,8 @@ dependencies = [
     "APScheduler>=3.11.3",
     "requests>=2.34.2",
 ]
+
+[tool.pyside6.deploy]
+title = "prayer-pause"
+mode = "standalone"
+extra_args = "--quiet --noinclude-qt-translations --include-data-dir=assets=assets --include-data-files=style.qss=style.qss --output-filename=prayer-pause"

@@ -5,6 +5,7 @@
 
 *.log
 *.json
+*.spec
 
 __pycache__/
 build/
