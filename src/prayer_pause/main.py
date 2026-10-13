@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from PySide6.QtWidgets import QApplication
 
 from prayer_pause.infrastructure.config_manager import ConfigManager
@@ -7,6 +5,7 @@ from prayer_pause.infrastructure.prayerapi import PrayerAPI
 from prayer_pause.presentation.app import Tray, Window
 from prayer_pause.presentation.locker import Locker
 from prayer_pause.services.scheduler_service import SchedulerService
+from prayer_pause.utils import Utils
 
 
 def main():
@@ -29,9 +28,9 @@ def main():
         on_notification=temp,
     )
 
-    with open(Path(__file__).parent.parent.parent / "style.qss", "r") as f:
-        _style = f.read()
-        app.setStyleSheet(_style)
+    style = Utils.STYLE_FILE.read_text(encoding="utf-8")
+    style = style.replace('url("assets/', f'url("{Utils.ASSETS_DIR.as_posix()}/')
+    app.setStyleSheet(style)
 
     print("Prayer Pause is running.")
 

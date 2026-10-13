@@ -4,10 +4,17 @@ from datetime import datetime
 from pathlib import Path
 from typing import ClassVar
 
+_COMPILED = "__compiled__" in globals()
+
 
 class Utils:
-    ROOT_DIR: ClassVar = Path(__file__).parent.parent.parent
+    ROOT_DIR: ClassVar = (
+        Path(__file__).parent.parent
+        if _COMPILED
+        else Path(__file__).parent.parent.parent
+    )
     ASSETS_DIR: ClassVar = ROOT_DIR / "assets"
+    STYLE_FILE: ClassVar = ROOT_DIR / "style.qss"
 
     # Values (in minutes) below correspond to the `Config` dataclass members in order.
     MIN_VALUES: ClassVar = [1, 1, 0]
