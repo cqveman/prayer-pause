@@ -20,12 +20,10 @@ def main():
     tray.show()
     locker = Locker(config_manager)
 
-    def temp(): ...
-
     scheduler_service = SchedulerService(prayers, config_manager)
     scheduler_service.schedule(
         on_prayer=locker.exc,
-        on_notification=temp,
+        on_notification=tray.notify,
     )
 
     style = Utils.STYLE_FILE.read_text(encoding="utf-8")

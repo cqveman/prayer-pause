@@ -10,24 +10,26 @@ from prayer_pause.utils import Utils
 
 class SchedulerService(QObject):
     prayer_signal = Signal(str)
-    notification_signal = Signal()
+    notification_signal = Signal(str, int)
 
     def __init__(self, prayers: dict[str, dict[str, str]], config_manager: ConfigManager):  # fmt:skip
         super().__init__()
 
         self._scheduler = BackgroundScheduler()
         self.prayers = prayers
-        self.config = config_manager.load()
+        self.config_manager = config_manager
+        self.config = self.config_manager.load()
 
     def schedule(
         self,
         on_prayer: Callable[[str], None],
-        on_notification: Callable[[], None],
+        on_notification: Callable[[str, int], None],
     ):
         self.prayer_signal.connect(on_prayer)
         self.notification_signal.connect(on_notification)
 
         self._schedule_day()
+
         # re-schedule every midnight
         self._scheduler.add_job(
             func=self._rollover,
@@ -38,10 +40,25 @@ class SchedulerService(QObject):
             id="rollover",
             replace_existing=True,
         )
+
+        # re-schedule when the settings change
+        self._scheduler.add_job(
+            func=self._check_config,
+            trigger="interval",
+            seconds=15,
+            id="config-watch",
+            replace_existing=True,
+        )
         self._run_scheduler()
 
     def _rollover(self):
         self._schedule_day()
+
+    def _check_config(self):
+        new_config = self.config_manager.load()
+        if new_config != self.config:
+            self.config = new_config
+            self._schedule_day()
 
     def _schedule_day(self):
         day = date.today().strftime("%d-%m-%Y")

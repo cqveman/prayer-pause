@@ -1,7 +1,7 @@
 from collections.abc import Callable
 from datetime import date, datetime
 
-from PySide6.QtCore import QSize, QTimer
+from PySide6.QtCore import QSize, QTimer, Slot
 from PySide6.QtGui import QAction, QIcon, QPixmap, Qt
 from PySide6.QtWidgets import (
     QApplication,
@@ -185,6 +185,10 @@ class Tray(QSystemTrayIcon):
         self.setToolTip("Prayer Pause")
         self.setContextMenu(self._build_menu())
         self.setIcon(QIcon(str(Utils.ASSETS_DIR / "icon.png")))
+
+    @Slot(str, int)
+    def notify(self, prayer_name: str, minutes: int):
+        self.showMessage("Prayer Pause", f"Lock for {prayer_name} in {minutes} min")
 
     def _build_menu(self) -> QMenu:
         menu = QMenu()

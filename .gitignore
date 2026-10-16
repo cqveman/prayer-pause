@@ -2,6 +2,7 @@
 .venv/
 dist/
 build/
+*.egg*/
 
 __pycache__/
 
