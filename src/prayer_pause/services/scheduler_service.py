@@ -48,10 +48,12 @@ class SchedulerService(QObject):
         now = datetime.now()
 
         for name, time_str in self.prayers[day].items():
-            prayer_dt = Utils().time_to_datetime(time_str)
-            notification_dt = prayer_dt - timedelta(minutes=self.config.prayer_reminder_minutes)  # fmt:skip
+            # fmt:off
+            lock_dt = Utils().time_to_datetime(time_str) + timedelta(minutes=self.config.lock_offset_minutes)
+            notification_dt = lock_dt - timedelta(minutes=self.config.prayer_reminder_minutes)
+            # fmt:on
 
-            if prayer_dt > now:
+            if lock_dt > now:
                 if notification_dt > now:
                     self._scheduler.add_job(
                         func=self.notification_signal.emit,
@@ -66,7 +68,7 @@ class SchedulerService(QObject):
                     func=self.prayer_signal.emit,
                     args=[name],
                     trigger="date",
-                    run_date=prayer_dt,
+                    run_date=lock_dt,
                     id=f"{day}-{name}",
                     replace_existing=True,
                 )
