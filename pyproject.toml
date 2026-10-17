@@ -25,4 +25,4 @@ dependencies = [
 title = "prayer-pause"
 mode = "standalone"
 icon = "assets/icon.ico"
-extra_args = "--quiet --noinclude-qt-translations --include-data-dir=assets=assets --include-data-files=style.qss=style.qss --output-filename=prayer-pause"
+extra_args = "--quiet --noinclude-qt-translations --include-data-dir=assets=assets --include-data-files=style.qss=style.qss --output-filename=prayer-pause --windows-console-mode=disable"
