@@ -1,3 +1,4 @@
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 
 from prayer_pause.infrastructure.config_manager import ConfigManager
@@ -9,12 +10,15 @@ from prayer_pause.utils import Utils
 
 
 def main():
+    app = QApplication([])
+    app.setQuitOnLastWindowClosed(False)
+    app.setApplicationName("prayer-pause")
+    app.setDesktopFileName("prayer-pause")
+    app.setWindowIcon(QIcon(str(Utils.ASSETS_DIR / "icon.png")))
+
     api = PrayerAPI()
     prayers = api.get_prayers()
     config_manager = ConfigManager()
-
-    app = QApplication([])
-    app.setQuitOnLastWindowClosed(False)
 
     tray = Tray(lambda: Window(prayers, config_manager))
     tray.show()
