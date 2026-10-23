@@ -1,7 +1,9 @@
-/.idea
-/.venv
-/dist
-/build
+.idea/
+.venv/
+dist/
+build/
+*.egg*/
 
-*.log
-*.json
+__pycache__/
+
+*.spec

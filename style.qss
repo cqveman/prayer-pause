@@ -1,0 +1,194 @@
+/* Palette
+    Apricot Cream  #FFDAAA
+    Dark Raspberry #880E48
+    Hot Rose       #C61469
+    Salmon         #FF9478
+
+  Dark Palette
+    Panel          #231621 -> #1A1016
+    Raised         #2A1B24
+    Hairline       #3A2631
+    Muted text     #C6A885
+*/
+
+/* --- MAIN --- */
+
+QWidget {
+    color: #FFDAAA;
+    font-size: 15px;
+}
+
+QWidget#dim {
+    background-color: rgba(14, 7, 11, 0.62);
+}
+
+QLabel#clock {
+    font-size: 34px;
+    font-weight: 500;
+}
+
+/* --- GROUPBOX --- */
+
+QGroupBox {
+    background-color: qlineargradient(
+        x1: 0, y1: 0, x2: 0, y2: 1,
+        stop: 0 #231621,
+        stop: 1 #1A1016
+    );
+    border: 1px solid #36232E;
+    border-radius: 16px;
+
+    padding-top: 50px;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+
+    left: 22px;
+    top: 20px;
+
+    color: #FF9478;
+}
+
+QLabel#prayerName {
+    color: #C6A885;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+QLabel#prayerTime {
+    color: #FFDAAA;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+QLabel#settingLabel {
+    color: #C6A885;
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 32px;
+}
+
+/* --- SPINBOX --- */
+
+QSpinBox {
+    background-color: #2A1B24;
+    border: 1px solid #3A2631;
+    border-radius: 10px;
+    padding: 1px 0;
+    min-height: 28px;
+}
+
+QSpinBox:hover {
+    border-color: #4C3341;
+}
+
+QSpinBox:focus {
+    border-color: #C61469;
+}
+
+QSpinBox::up-button {
+    subcontrol-origin: padding;
+    subcontrol-position: right;
+
+    width: 30px;
+
+    border-left: 1px solid #3A2631;
+
+    border-top-right-radius: 9px;
+    border-bottom-right-radius: 9px;
+}
+
+QSpinBox::down-button {
+    subcontrol-origin: padding;
+    subcontrol-position: left;
+
+    width: 30px;
+
+    border-right: 1px solid #3A2631;
+
+    border-top-left-radius: 9px;
+    border-bottom-left-radius: 9px;
+}
+
+QSpinBox::up-button:hover,
+QSpinBox::down-button:hover {
+    background-color: #4A1B33;
+}
+
+QSpinBox::up-button:pressed,
+QSpinBox::down-button:pressed {
+    background-color: #880E48;
+}
+
+QSpinBox::up-arrow {
+    image: url("assets/plus.svg");
+    width: 12px;
+    height: 12px;
+}
+
+QSpinBox::down-arrow {
+    image: url("assets/minus.svg");
+    width: 12px;
+    height: 12px;
+}
+
+QSpinBox::up-arrow:disabled,
+QSpinBox::up-arrow:off {
+    image: url("assets/plus_off.svg");
+}
+
+QSpinBox::down-arrow:disabled,
+QSpinBox::down-arrow:off {
+    image: url("assets/minus_off.svg");
+}
+
+/* --- LOCKER --- */
+
+QWidget#Locker {
+    background: qlineargradient(
+        x1: 0, y1: 0, x2: 0, y2: 1,
+        stop: 0 #880E48,
+        stop: 0.55 #880E48,
+        stop: 1 #C61469
+    );
+}
+
+QWidget#Locker QLabel {
+    background: transparent;
+}
+
+QLabel#Title {
+    color: #FF9478;
+    font-size: 26px;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+
+QLabel#Countdown {
+    color: #FFDAAA;
+    font-size: 176px;
+    font-weight: 600;
+}
+
+QProgressBar#Progress {
+    background: rgba(255, 218, 170, 45);
+    border: none;
+    border-radius: 3px;
+    min-height: 6px;
+    max-height: 6px;
+}
+
+QProgressBar#Progress::chunk {
+    border-radius: 3px;
+    background: qlineargradient(
+        x1: 0, y1: 0, x2: 1, y2: 0,
+        stop: 0 #FF9478,
+        stop: 1 #FFDAAA
+    );
+}

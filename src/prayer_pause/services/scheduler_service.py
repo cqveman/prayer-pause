@@ -1,0 +1,96 @@
+from collections.abc import Callable
+from datetime import date, datetime, timedelta
+
+from apscheduler.schedulers.background import BackgroundScheduler
+from PySide6.QtCore import QObject, Signal
+
+from prayer_pause.infrastructure.config_manager import ConfigManager
+from prayer_pause.utils import Utils
+
+
+class SchedulerService(QObject):
+    prayer_signal = Signal(str)
+    notification_signal = Signal(str, int)
+
+    def __init__(self, prayers: dict[str, dict[str, str]], config_manager: ConfigManager):  # fmt:skip
+        super().__init__()
+
+        self._scheduler = BackgroundScheduler()
+        self.prayers = prayers
+        self.config_manager = config_manager
+        self.config = self.config_manager.load()
+
+    def schedule(
+        self,
+        on_prayer: Callable[[str], None],
+        on_notification: Callable[[str, int], None],
+    ):
+        self.prayer_signal.connect(on_prayer)
+        self.notification_signal.connect(on_notification)
+
+        self._schedule_day()
+
+        # re-schedule every midnight
+        self._scheduler.add_job(
+            func=self._rollover,
+            trigger="cron",
+            hour=0,
+            minute=0,
+            second=5,
+            id="rollover",
+            replace_existing=True,
+        )
+
+        # re-schedule when the settings change
+        self._scheduler.add_job(
+            func=self._check_config,
+            trigger="interval",
+            seconds=15,
+            id="config-watch",
+            replace_existing=True,
+        )
+        self._run_scheduler()
+
+    def _rollover(self):
+        self._schedule_day()
+
+    def _check_config(self):
+        new_config = self.config_manager.load()
+        if new_config != self.config:
+            self.config = new_config
+            self._schedule_day()
+
+    def _schedule_day(self):
+        day = date.today().strftime("%d-%m-%Y")
+        now = datetime.now()
+
+        for name, time_str in self.prayers[day].items():
+            # fmt:off
+            lock_dt = Utils().time_to_datetime(time_str) + timedelta(minutes=self.config.lock_offset_minutes)
+            notification_dt = lock_dt - timedelta(minutes=self.config.prayer_reminder_minutes)
+            # fmt:on
+
+            if lock_dt > now:
+                if notification_dt > now:
+                    self._scheduler.add_job(
+                        func=self.notification_signal.emit,
+                        args=[name, self.config.prayer_reminder_minutes],
+                        trigger="date",
+                        run_date=notification_dt,
+                        id=f"{day}-{name}-notify",
+                        replace_existing=True,
+                    )
+
+                self._scheduler.add_job(
+                    func=self.prayer_signal.emit,
+                    args=[name],
+                    trigger="date",
+                    run_date=lock_dt,
+                    id=f"{day}-{name}",
+                    replace_existing=True,
+                )
+
+    def _run_scheduler(self):
+        # Only start the scheduler if it's not running before
+        if self._scheduler.state == 0:
+            self._scheduler.start()
