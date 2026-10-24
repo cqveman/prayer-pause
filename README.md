@@ -4,6 +4,11 @@ A small desktop app that runs in the background and locks your screen for a few 
 
 It works on Linux and Windows (Tested on Windows 11 and Arch Linux, although should work on most Linux distros).
 
+<p align="center">
+  <img src="assets/app-ss.png" width="400" alt="app screenshot">
+  <img src="assets/locker-ss.png" width="400" alt="locker screenshot">
+</p>
+
 ## What it does
 
 - Finds your city from your IP address.
