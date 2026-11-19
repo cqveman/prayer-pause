@@ -18,7 +18,7 @@ It works on Linux and Windows (Tested on Windows 11 and Arch Linux, although sho
 
 ## Installing
 
-- Get the latest zip file from the [Releases](https://github.com/cqveman/prayer-pause/releases) page.
+- Get the latest binary (Linux) or exe (Windows) file from the [Releases](https://github.com/cqveman/prayer-pause/releases) page.
 
 ## Building from source
 
@@ -31,14 +31,14 @@ python -m venv .venv
 source .venv/bin/activate      # Windows: .venv\Scripts\activate
 ```
 
-The app is packaged with `pyside6-deploy`. Build on the system you want to run it on.
+The app is packaged with `nuitka`. Build on the system you want to run it on.
 
 ```bash
 pip install -e .
-pyside6-deploy deploy.py
+python -m nuitka deploy.py
 ```
 
-The finished app is a folder named `prayer-pause.dist`. Run the `prayer-pause` file inside it (`prayer-pause.exe` on Windows). Keep the whole folder together, because the app needs the files next to it.
+The finished build is in `/deployment`.
 
 If you want to just run it from the source:
 
@@ -81,6 +81,9 @@ Saved prayer times are kept here:
 ## To do
 
 - [ ] Start automatically on login (Linux and Windows)
+- [ ] Fix the locker offset functionality
+- [ ] Use a custom font instead of the OS's
+- [ ] Automate the building process using GitHub Workflows
 - [ ] Lock screen on all workspaces (Hyprland)
 
 ## License
