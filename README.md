@@ -35,7 +35,7 @@ The app is packaged with `nuitka`. Build on the system you want to run it on.
 
 ```bash
 pip install -e .
-python -m nuitka deploy.py
+python -m nuitka build.py
 ```
 
 The finished build is in `/deployment`.
