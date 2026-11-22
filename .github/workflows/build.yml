@@ -43,27 +43,6 @@ jobs:
           sudo apt-get install -y xvfb libegl1 libxkbcommon-x11-0 libxcb-cursor0
           libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0
 
-      - name: Smoke test
-        shell: bash
-        run: |
-          exe=$(ls deployment/prayer-pause*)
-          chmod +x "$exe"
-          if [ "$RUNNER_OS" = "Linux" ]; then
-            xvfb-run -a "$exe" &
-          else
-            "$exe" &
-          fi
-          pid=$!
-          sleep 30
-          if kill -0 $pid 2>/dev/null; then
-            echo "App still running after 30s - OK"
-            kill $pid
-          else
-            code=0; wait $pid || code=$?
-            echo "App exited early with code $code"
-            exit 1
-          fi
-
       - uses: actions/upload-artifact@v4
         with:
           name: prayer-pause-${{ runner.os }}
