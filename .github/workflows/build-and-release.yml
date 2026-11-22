@@ -1,0 +1,75 @@
+name: Build & Release
+
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            mode: standalone
+          - os: windows-latest
+            mode: onefile
+    runs-on: ${{ matrix.os }}
+
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      # Needed for builds on Linux
+      - name: Install patchelf
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y patchelf
+
+      - name: Install app + dependencies
+        run: pip install .
+
+      - uses: Nuitka/Nuitka-Action@main
+        with:
+          nuitka-version: main
+          script-name: build.py
+          mode: ${{ matrix.mode }}
+          output-dir: deployment
+
+      # tar-ing it to keep chmod permissions
+      - name: Package (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          mv deployment/*.dist deployment/prayer-pause
+          tar -czf deployment/prayer-pause-linux-x86_64.tar.gz -C deployment prayer-pause
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: prayer-pause-${{ runner.os }}
+          path: |
+            deployment/*.exe
+            deployment/*.tar.gz
+          if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* --repo "$GITHUB_REPOSITORY" --generate-notes
